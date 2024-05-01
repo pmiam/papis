@@ -9,12 +9,11 @@ def compute_an_id(doc: papis.document.Document,
                   seed: Optional[str] = None) -> str:
     """Make an id for the input document *doc*.
 
-    This is a non-deterministic function if *separator* is *None* (a random value
-    is used). For a given value of *separator*, the result is deterministic.
+    This is a non-deterministic function if *seed* is *None* (a random value
+    is used). For a given value of *seed*, the result is deterministic.
 
     :arg doc: a document for which to generate an id.
-    :arg separator: a string used to separate the document fields that go into
-        constructing the id.
+    :arg seed: a string used to seed the digest algorithm.
 
     :returns: a (hexadecimal) id for the document that is unique to high probability.
     """
