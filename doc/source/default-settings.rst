@@ -418,6 +418,22 @@ Add options
     If a folder name is not unique and the document does not appear to
     be a duplicate, a suffix ``-a``, ``-b``, etc. is added to the names.
 
+.. papis-config:: deterministic-papis-id
+
+   Set to an arbitrary string to produce unique ``papis_id`` values as a
+   repeatable function of the reference contents (not including the info file).
+
+   This setting enables viably using ``papis_id`` in ``unique-document-keys``
+   for detecting duplicate library entries. So if two sets of files are bitwise
+   identical they can be identified as duplicated despite differing metadata.
+
+   As a drawback, the user becomes susceptible to extremely unlikely accidental
+   hash collisions. In this case the seed will have to be reset to ``None``, then
+   the spurious colliding reference re-added, finally the seed can be reset. A
+   randomized ``papis_id`` added in this way cannot meaningfully detect duplicates.
+
+   If this configuration key is unset, papis guarantees 100% unique ids every time.
+
 .. papis-config:: add-file-name
     :type: str
 
