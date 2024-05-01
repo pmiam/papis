@@ -116,10 +116,15 @@ class Database(ABC):
         key_name = papis.id.key_name()
         if key_name in doc:
             return
-        while True:
-            new_id = papis.id.compute_an_id(doc)
+
+        seed = papis.config.get("deterministic-papis-id")
+
+        new_id = papis.id.compute_an_id(doc, seed)
+        while not seed:
             other_docs = self.query_dict({key_name: new_id})
             if not other_docs:
                 break
+            new_id = papis.id.compute_an_id(doc)
+
         doc[key_name] = new_id
         doc.save()

@@ -224,4 +224,5 @@ settings: Dict[str, Any] = {
                           "«{doc[year]:4}»"
                           "{c.Style.RESET_ALL}"
                           ":{doc[tags]}"),
+    "deterministic-papis-id": None
 }
