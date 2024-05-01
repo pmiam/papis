@@ -6,7 +6,7 @@ import papis.document
 
 
 def compute_an_id(doc: papis.document.Document,
-                  separator: Optional[str] = None) -> str:
+                  seed: Optional[str] = None) -> str:
     """Make an id for the input document *doc*.
 
     This is a non-deterministic function if *separator* is *None* (a random value
@@ -19,14 +19,16 @@ def compute_an_id(doc: papis.document.Document,
     :returns: a (hexadecimal) id for the document that is unique to high probability.
     """
 
-    separator = separator if separator is not None else str(random.random())
-    string = separator.join([
-        str(doc),
-        str(doc.get_files()),
-        str(doc.get_info_file()),
-    ])
+    seed = seed if seed is not None else str(random.random())
 
-    return hashlib.md5(string.encode()).hexdigest()
+    digest = hashlib.md5()
+    digest.update(seed.encode())
+
+    for path in sorted(doc.get_files()):
+        with open(path, "rb") as fd:
+            digest.update(fd.read())
+
+    return digest.hexdigest()
 
 
 def key_name() -> str:
