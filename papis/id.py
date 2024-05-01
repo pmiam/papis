@@ -21,7 +21,7 @@ def compute_an_id(doc: papis.document.Document,
 
     seed = seed if seed is not None else str(random.random())
 
-    digest = hashlib.md5()
+    digest = hashlib.md5(usedforsecurity=False)
     digest.update(seed.encode())
 
     for path in sorted(doc.get_files()):
