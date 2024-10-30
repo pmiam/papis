@@ -1,5 +1,5 @@
 import string
-from typing import Any, Dict, Optional
+from typing import Any, ClassVar, Dict, Optional
 
 import papis.config
 import papis.plugin
@@ -39,6 +39,9 @@ def unescape(fmt: str) -> str:
 
 class Formatter:
     """A generic formatter that works on templated strings using a document."""
+
+    #: A name for the formatter.
+    name: ClassVar[str]
 
     def __init__(self) -> None:
         self.default_doc_name = papis.config.getstring("format-doc-name")
@@ -151,6 +154,7 @@ class PythonFormatter(Formatter):
     single spaces).
     """
 
+    name: ClassVar[str] = "python"
     psf = _PythonStringFormatter()
 
     def format(self,
@@ -211,7 +215,7 @@ class Jinja2Formatter(Formatter):
 
     name: ClassVar[str] = "jinja2"
     if not exc:
-        env: Environment = Environment() # type: ignore
+        env: Environment = Environment()  # type: ignore
     else:
         logger.error(
             "The 'jinja2' formatter requires the 'jinja' library. "
