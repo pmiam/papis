@@ -272,20 +272,9 @@ def keys_missing_check(doc: papis.document.Document) -> List[Error]:
 
     :returns: a :class:`list` of errors, one for each missing key.
     """
-    from papis.defaults import NOT_SET
-
     folder = doc.get_main_folder() or ""
-    keys = papis.config.get("keys-exist-keys", section="doctor")
-    if keys is NOT_SET:
-        keys = papis.config.getlist("keys-missing-keys", section="doctor")
-    else:
-        logger.warning("The configuration option 'doctor-keys-exist-keys' "
-                       "is deprecated and will be removed in the next version. "
-                       "Use 'doctor-keys-missing-keys' instead.")
 
-    if keys is None:
-        keys = []
-
+    keys = papis.config.getlist("keys-missing-keys", section="doctor") or []
     keys.extend(papis.config.getlist("keys-missing-keys-extend", section="doctor"))
 
     def make_fixer(key: str) -> Optional[FixFn]:
@@ -739,18 +728,9 @@ def get_key_type_check_keys() -> Dict[str, type]:
     """
     import builtins
 
-    from papis.defaults import NOT_SET
-
-    keys = papis.config.get("key-type-check-keys", section="doctor")
-    if keys is NOT_SET:
-        keys = papis.config.getlist("key-type-keys", section="doctor")
-    else:
-        keys = papis.config.getlist("key-type-check-keys", section="doctor")
-        logger.warning("The configuration option 'doctor-key-type-check-keys' "
-                       "is deprecated and will be removed in the next version. "
-                       "Use 'doctor-key-type-keys' instead.")
-
+    keys = papis.config.getlist("key-type-keys", section="doctor") or []
     keys.extend(papis.config.getlist("key-type-keys-extend", section="doctor"))
+
     processed_keys: Dict[str, type] = {}
     for value in keys:
         if ":" not in value:
@@ -778,19 +758,10 @@ def key_type_check(doc: papis.document.Document) -> List[Error]:
     :returns: a :class:`list` of errors, one for each key does not have the
         expected type (if it exists).
     """
-    from papis.defaults import NOT_SET
-
     folder = doc.get_main_folder() or ""
 
     # NOTE: the separator can be quoted so that it can force whitespace
-    separator = papis.config.get("key-type-check-separator", section="doctor")
-    if separator is NOT_SET:
-        separator = papis.config.get("key-type-separator", section="doctor")
-    else:
-        logger.warning("The configuration option 'doctor-key-type-check-separator' "
-                       "is deprecated and will be removed in the next version. "
-                       "Use 'doctor-key-type-separator' instead.")
-
+    separator = papis.config.get("key-type-separator", section="doctor")
     separator = separator.strip("'").strip('"') if separator else None
 
     def make_fixer(key: str, cls: type) -> FixFn:
@@ -1014,9 +985,7 @@ register_check(HTML_CODES_CHECK_NAME, html_codes_check)
 register_check(HTML_TAGS_CHECK_NAME, html_tags_check)
 register_check(KEY_TYPE_CHECK_NAME, key_type_check)
 
-DEPRECATED_CHECK_NAMES = {
-    "keys-exist": "keys-missing",
-}
+DEPRECATED_CHECK_NAMES = {}
 
 
 def gather_errors(documents: List[papis.document.Document],
