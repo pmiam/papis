@@ -66,24 +66,24 @@ class ScriptLoaderGroup(click.Group):
     def get_command(
             self,
             ctx: click.core.Context,
-            name: str) -> Optional[click.core.Command]:
+            cmd_name: str) -> Optional[click.core.Command]:
         """Get the command to be run
 
         >>> group = ScriptLoaderGroup()
         >>> cmd = group.get_command(None, 'add')
-        >>> cmd.name, cmd.help
+        >>> cmd.cmd_name, cmd.help
         ('add', 'Add...')
         >>> group.get_command(None, 'this command does not exist')
         Command ... is unknown!
         """
         try:
-            script = self.scripts[name]
+            script = self.scripts[cmd_name]
         except KeyError:
             import difflib
             matches = list(map(
-                str, difflib.get_close_matches(name, self.scripts, n=2)))
+                str, difflib.get_close_matches(cmd_name, self.scripts, n=2)))
 
-            click.echo("Command '{name}' is unknown!".format(name=name))
+            click.echo("Command '{cmd_name}' is unknown!".format(cmd_name=cmd_name))
             if len(matches) == 1:
                 # return the match if there was only one match
                 click.echo(f"I suppose you meant: '{matches[0]}'")
